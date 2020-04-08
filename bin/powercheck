@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+while :; do for BAT in /sys/class/power_supply/BAT* ; do
+        read stat < "$BAT/status"
+        read cap  < "$BAT/status"
+        [ "$cap" -lt 25 ] && [ "$stat" != "Charging" ] &&
+            notify-send "Battery Low"
+    done
+    sleep 500
+done

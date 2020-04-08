@@ -1,0 +1,22 @@
+#
+# CARBS aliases file
+#
+
+# I have stopped using aliases a lot, but here
+# are the ones I still use regularly
+
+alias l="ls"
+alias mutt="neomutt"
+alias vim="nvim"             # Lol I forget typing nvim
+
+# I usually launch the X client of emacs from dmenu,
+# but I want emacs to be on tty/console if I am launching
+# it from the terminal
+alias emacs="emacs -nw"
+
+# Youtube MP3 alias
+alias ymp3="youtube-dl --audio-format mp3 -x"
+
+alias sc="eval \$(shortcuts)"
+
+# vim:filetype=sh

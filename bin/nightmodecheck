@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+die() { echo There is a problem; exit 1; }
+
+[ -e "$HOME/.night" ] || die
+. "$HOME/.night"
+
+[ "$CLICK" = 0 ] && RETCLICK="" || RETCLICK="Overriden"
+[ "$NIGHT" = 0 ] && RETNIGHT="0" || RETNIGHT="1"
+
+[ -z "$RETCLICK" ] && echo "$RETNIGHT" || echo "$RETNIGHT $RETCLICK"

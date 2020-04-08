@@ -1,0 +1,48 @@
+#!/usr/bin/env sh
+
+if [ -e "$HOME/.night" ]
+then
+	. "$HOME/.night"
+	case $1 in
+		"click")
+			if [ "$NIGHT" = '1' ]
+			then
+				sed -i 's/NIGHT=1/NIGHT=0/g' "$HOME/.night"
+			else
+				sed -i 's/NIGHT=0/NIGHT=1/g' "$HOME/.night"
+			fi
+			sed -i 's/CLICK=0/CLICK=1/g' "$HOME/.night"
+			;;
+		"disable")
+			sed -i 's/CLICK=1/CLICK=0/g' "$HOME/.night"
+			"$HOME/.local/bin/nightmodetoggle" cron
+			exit
+			;;
+		"cron")
+			[ "$CLICK" = "1" ] && exit
+			[ -e "$HOME/.sunset" ] && . "$HOME/.sunset"
+			[ -z "$SUNSET" ] && SUNSET=1959
+			[ -z "$SUNRISE" ] && SUNRISE=0600
+			if [ "$(date +%H%M)" -gt "$SUNSET" ] ||  [ "$(date +%H%M)" -lt "$SUNRISE" ]
+			then
+				sed -i 's/NIGHT=0/NIGHT=1/g' "$HOME/.night"
+			else
+				sed -i 's/NIGHT=1/NIGHT=0/g' "$HOME/.night"
+			fi
+			;;
+		*)
+			printf "Please enter an argument!\ne.g.\nclick\ndisable\ncron\n"
+			exit
+			;;
+	esac
+	. "$HOME/.night"
+	if [ "$NIGHT" = 1 ]; then
+		feh --bg-fill --randomize "$HOME/Pictures/Wallpapers/Night"/*
+	else
+		feh --bg-fill --randomize "$HOME/Pictures/Wallpapers/Morning"/*
+	fi
+else
+	:> "$HOME/.night"
+	printf "CLICK=0\nNIGHT=0\\n" > "$HOME/.night"
+	"$HOME/.local/bin/nightmodetoggle" disable
+fi

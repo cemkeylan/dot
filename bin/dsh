@@ -1,0 +1,13 @@
+#!/bin/sh
+
+choice="$(sed 's/#.*//;/^[[:space:]]*$/d' "$HOME/.config/files" |
+    cut -d' ' -f2 | dmenu -p "Choose shortcut")"
+
+sed "s/#.*//;/^[[:space:]]*$/d;s#~#$HOME#" "$HOME/.config/files" |
+    while read -r ext shrt file ; do
+        [ "$shrt" = "$choice" ] || continue
+        case "$ext" in
+            d) ${TERMINAL:-st} -e "${FILE:-lf}" "$file" ;;
+            e) ${TERMINAL:-st} -e "${EDITOR:-vi}" "$file" ;; esac
+        break
+done

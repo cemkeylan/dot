@@ -1,0 +1,12 @@
+#!/bin/sh
+
+EMACSCLIENT_EXTRA_OPTIONS="${EMACSCLIENT_EXTRA_OPTIONS}"
+tty >/dev/null 2>&1 && EMACSCLIENT_EXTRA_OPTIONS="$EMACSCLIENT_EXTRA_OPTIONS -nw"
+
+for opt in "$@" ; do
+    EMACSCLIENT_EXTRA_OPTIONS="$EMACSCLIENT_EXTRA_OPTIONS $opt"
+done
+
+# We want word splitting
+# shellcheck disable=2086
+emacsclient -a vi -c $EMACSCLIENT_EXTRA_OPTIONS

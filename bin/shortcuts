@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+# Unactivated progs should go to /dev/null
+
+# shellcheck disable=SC2016
+
+shellshortcuts="$HOME/.config/shortcutrc"
+
+printf "# vim:ft=sh\nalias " > "$shellshortcuts"
+
+sed 's/#.*//;/^[[:space:]]*$/d' "$HOME/.config/files" | while read -r ext shrt loc; do
+    case $ext in
+        f) printf '%s="$EDITOR %s" \\\n' "$shrt" "$loc" >> "$shellshortcuts" ;;
+        d) printf '%s="cd %s && ls -A" \\\n' "$shrt" "$loc" >> "$shellshortcuts" ;;
+	esac
+done
+
+# You can use this to run 'eval $(shortcuts)'
+printf '. %s\n' "$shellshortcuts"

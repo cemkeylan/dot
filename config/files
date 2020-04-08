@@ -1,0 +1,32 @@
+# Syntax:
+# d for directories
+# f for files
+# "d/f" "shortcut" "file/directory"
+# Example:
+# f cv  ~/.config/nvim/init.vim
+# d bin ~/.local/bin
+
+# Important directories
+d h    ~/
+d bin  ~/.local/bin
+d cf   ~/.config
+d dl   ~/dl
+d doc  ~/doc
+d pr   ~/proj
+
+# Configuration files
+f cfe  ~/.env
+f cfp  ~/.profile
+f ali  ~/.config/env/aliases
+f cfcp ~/.customprofile
+f cfcs ~/.custom.sh
+f csf  ~/.config/files
+f sxh  ~/.config/sxhkd/sxhkdrc
+
+# Projects
+d df     ~/dotfiles
+d ebk    ~/ebooks-pdf
+d repo   ~/.local/repositories/main
+d repod  ~/.local/repositories
+d cl     ~/proj/carbslinux
+d lms    ~/proj/lms

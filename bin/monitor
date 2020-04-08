@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# This is specific to my Pavilion setup
+
+MONITOR_INTERN="${MONITOR_INTERN-eDP1}"
+MONITOR_EXTERN="${MONITOR_EXTERN-HDMI1}"
+
+out() { printf '\033[1;36m-> \033[m%s\n' "$@" ;}
+err() { printf '\033[1;36m-> \033[m%s\n' "$@" >&2 ;}
+usage() { err "${0##*/} [d|e|i|l|r]" ; out \
+"duplicate Duplicate the view to the external screen" \
+"external  Only use the external screen" \
+"internal  Only use the internal screen" \
+"left      Use the external screen on the left side of primary" \
+"right     Use the external screen on the right side of primary"
+err "" "          MONITOR_INTERN=$MONITOR_INTERN MONITOR_EXTERN=$MONITOR_EXTERN" \
+    "These variables can be set from your shellrc"
+}
+
+dmenumonitor() {
+    out() { printf '%s\n' "$@" ;}
+    choice="$(usage | dmenu -l 10 -p "Choose a monitor configuration" | cut -d ' ' -f 1)"
+    [ "$choice" ] && main "$choice"
+}
+
+main() {
+    [ "$2" ] && { usage; exit 1 ;}
+    case "$1" in
+        i|internal) xrandr --output "$MONITOR_EXTERN" --off --output "$MONITOR_INTERN" --auto ;;
+        d|duplicate) xrandr --output "$MONITOR_EXTERN" --same-as "$MONITOR_INTERN" ;;
+        e|external) xrandr --output "$MONITOR_INTERN" --off --output "$MONITOR_EXTERN" --auto ;;
+        l|left) xrandr --output "$MONITOR_INTERN" --primary --auto --output HDMI1 --left-of "$MONITOR_INTERN" --auto ;;
+        r|right) xrandr --output "$MONITOR_INTERN" --primary --auto --output HDMI1 --right-of "$MONITOR_INTERN" --auto ;;
+        *) tty >/dev/null 2>&1 && usage || dmenumonitor ;;
+    esac
+}
+
+main "$@"

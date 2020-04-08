@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+mpc pause >/dev/null 2>&1 &
+xset dpms force off
+exec slock

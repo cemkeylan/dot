@@ -1,0 +1,50 @@
+#!/bin/sh -e
+# shellcheck disable=2015
+
+SYS_PATH="/sys/class/backlight"
+
+out() { printf '\033[1;36m-> \033[m%s\n' "$@" >&2 ;}
+err() { printf '\033[1;31m!> \033[m%s\n' "$@" >&2 ;}
+die() { err "$@" ; exit 1 ;}
+
+usage() {
+    out \
+        "usage: ${0##*/} [d|g|i|l|s]" \
+        "decrease PERCENT    Decreases the backlight brightness" \
+        "get                 Shows the brightness in percentage" \
+        "increase PERCENT    Increases the backlight brightness" \
+        "list                Lists the backlight controllers" \
+        "set      PERCENT    Sets the backlight brightness" "" \
+        "You can set the BACKLIGHT environment value to force a controller"
+    exit 0
+}
+
+
+getcontroller() {
+    [ "$BACKLIGHT" ] || for ctrl in "$SYS_PATH/"* ; do [ -d "$ctrl" ] || break ; BACKLIGHT="${ctrl##*/}" ; done
+    read -r max_bri < "$SYS_PATH/$BACKLIGHT/max_brightness"
+    read -r cur_bri < "$SYS_PATH/$BACKLIGHT/brightness"
+    per=$(( max_bri / 100 ))
+}
+
+main() {
+    getcontroller
+    arg="$2"
+    case "$1" in
+        d|decrease)
+            set="$(( cur_bri - arg * per ))" ; ! [ "$set" -lt 0 ] || set=0
+            echo "$set" > "$SYS_PATH/${BACKLIGHT:?}/brightness" ;;
+        g|get) echo "$(( cur_bri / per ))" ;;
+        i|increase)
+            set="$(( cur_bri + arg * per ))" ; ! [ "$set" -gt "$max_bri" ] || set="$max_bri"
+            echo "$set" > "$SYS_PATH/${BACKLIGHT:?}/brightness" ;;
+        l|list) find "$SYS_PATH" \( -type d -o -type l \) ;;
+        s|set)
+            ! [ "$arg" -gt 100 ] && ! [ "$arg" -lt 0 ] || die "${0##*/}: invalid value $arg"
+            echo "$(( arg * per ))" > "$SYS_PATH/${BACKLIGHT:?}/brightness" ;;
+        h|help|-h|--help|'') usage ;;
+        *) die "Unknown action '$1'" ;;
+    esac
+}
+
+main "$@"

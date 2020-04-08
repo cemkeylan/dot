@@ -1,0 +1,5 @@
+#!/bin/sh
+
+( exec X -keeptty :0 vt1 ;) &
+DISPLAY=:0 "$HOME/.xinitrc"
+wait
