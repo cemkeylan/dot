@@ -1,0 +1,9 @@
+#!/bin/sh
+# Typing scrot doesn't leave my brain.
+#
+# xscreenshot:       https://git.2f30.org/xscreenshot
+# ff2png (farbfeld): https://git.suckless.org/farbfeld
+
+# If no arguments are given and being piped, output to stdout.
+[ "$1" ] || [ -t 1 ] || set -- /dev/stdout
+xscreenshot | ff2png > "${1:-"screenshot-$(date +%Y%m%d-%H%M).png"}"
